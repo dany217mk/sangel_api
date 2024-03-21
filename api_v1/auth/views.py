@@ -34,6 +34,26 @@ async def login_user(user_in: UserCreate, session: AsyncSession = Depends(db_hel
     return UserInfo(id=user.id, email=user.code, name=user.name, surname=user.surname)
 
 
+@router.post("/login_debug/", response_model=UserInfo)
+async def login_user(user_in: UserCreate, session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
+    user = await get_user_by_email(session, user_in.email)
+    if user is None:
+        if check_email(user_in.email):
+            pass
+            # user = await crud.create_user(session=session, user_in=user_in)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid email",
+            )
+    else:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"User with email '{user_in.email}' already exist!",
+        )
+    return UserInfo(id=user_in.id, email=user_in.email, name=user_in.name, surname=user_in.surname)
+
+
 @router.post("/", response_model=TokenInfo)
 async def auth_user(user_auth: UserAuth, session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
     user = await get_user_by_email(session, user_auth.email)

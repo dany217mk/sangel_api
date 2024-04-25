@@ -10,6 +10,10 @@ class UserBase(BaseModel):
     password: str
 
 
+class UserShowBase(BaseModel):
+    email: str
+
+
 class UserCreate(UserBase):
     name: str
     surname: str
@@ -37,14 +41,13 @@ class UserUpdate(UserCreate):
     code: str | None = None
 
 
-class User(UserBase):
+class User(UserShowBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     access: int
     longitude: float | None = None
     latitude: float | None = None
-    code: str | None
     image: str | None = None
     my_contacts: list[Contact] | None
     for_contacts: list[Contact] | None

@@ -35,7 +35,7 @@ async def login_user(user_in: UserCreate, session: AsyncSession = Depends(db_hel
 
 
 @router.post("/login_debug/", response_model=UserInfo)
-async def login_user(user_in: UserCreate, session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
+async def login_user_debug(user_in: UserCreate, session: AsyncSession = Depends(db_helper.scoped_session_dependency)):
     user = await get_user_by_email(session, user_in.email)
     if user is None:
         if check_email(user_in.email):

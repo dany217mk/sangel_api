@@ -5,7 +5,7 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import selectinload, joinedload
 
 from api_v1.status.schemas import StatusUpdate
-from api_v1.users.schemas import UserCreate, UserUpdate
+from api_v1.users.schemas import UserCreate, UserUpdate, UserUpdateCoordinates
 from api_v1.security import generate_otp_code, hash_password, send_email
 from core.config import settings
 from core.models import Status
@@ -54,6 +54,17 @@ async def get_user_by_email(session: AsyncSession, email: str) -> User | None:
 
 
 async def update_user(
+    session: AsyncSession,
+    user: User,
+    user_update: UserUpdateCoordinates,
+) -> User:
+    for name, value in user_update.model_dump(exclude_unset=True).items():
+        setattr(user, name, value)
+    await session.commit()
+    return user
+
+
+async def update_user_coordinates(
     session: AsyncSession,
     user: User,
     user_update: UserUpdate,

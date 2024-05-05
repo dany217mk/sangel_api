@@ -12,7 +12,7 @@ from api_v1.security import check_current_token_auth
 from api_v1.status.schemas import StatusUpdate, Status
 from api_v1.users import crud
 from api_v1.users.dependencies import user_by_id
-from api_v1.users.schemas import UserCreate, User, UserUpdate
+from api_v1.users.schemas import UserCreate, User, UserUpdate, UserUpdateCoordinates
 from core.config import settings
 from core.models import Notification
 from core.models.db_helper import db_helper
@@ -43,6 +43,12 @@ async def get_user_by_id(user: User = Depends(user_by_id), credentials=Depends(c
 
 @router.patch("/update/")
 async def update_user(user_update: UserUpdate,  session: AsyncSession = Depends(db_helper.scoped_session_dependency), credentials=Depends(check_current_token_auth)):
+    user = await crud.get_user(session=session, user_id=credentials.get("sub"))
+    return await crud.update_user(session=session, user=user, user_update=user_update)
+
+
+@router.patch("/update_coordinates/")
+async def update_user_coordinates(user_update: UserUpdateCoordinates,  session: AsyncSession = Depends(db_helper.scoped_session_dependency), credentials=Depends(check_current_token_auth)):
     user = await crud.get_user(session=session, user_id=credentials.get("sub"))
     return await crud.update_user(session=session, user=user, user_update=user_update)
 

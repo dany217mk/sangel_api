@@ -41,6 +41,11 @@ class UserUpdate(UserCreate):
     code: str | None = None
 
 
+class UserUpdateCoordinates(BaseModel):
+    longitude: float | None = None
+    latitude: float | None = None
+
+
 class User(UserShowBase):
     model_config = ConfigDict(from_attributes=True)
 

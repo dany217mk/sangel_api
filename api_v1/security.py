@@ -62,17 +62,25 @@ def check_email(email: str) -> bool:
 
 
 def send_email(subject: str, message: str, email_receiver: str):
-    email_sender = settings.email_sender
-    email_paasword = settings.email_password
-    em = EmailMessage()
-    em['From'] = email_sender
-    em['To'] = email_receiver
-    em['Subject'] = subject
-    em.set_content(message)
+    try:
+        email_sender = settings.email_sender
+        email_password = settings.email_password
+        em = EmailMessage()
+        em['From'] = email_sender
+        em['To'] = email_receiver
+        em['Subject'] = subject
+        em.set_content(message)
 
-    context = ssl.create_default_context()
+        context = ssl.create_default_context()
 
-    with smtplib.SMTP_SSL('smtp.gmail.com', 587, context=context) as smtp:
-        smtp.starttls(context=context)
-        smtp.login(email_sender, email_paasword)
-        smtp.sendmail(email_sender, email_receiver, em.as_string())
+        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+            smtp.ehlo()  # Проверка соединения
+            smtp.starttls(context=context)
+            smtp.ehlo()
+            smtp.login(email_sender, email_password)
+            smtp.sendmail(email_sender, email_receiver, em.as_string())
+
+        print("Email sent successfully!")
+
+    except Exception as e:
+        print(f"Error: {e}")

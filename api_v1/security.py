@@ -73,10 +73,8 @@ def send_email(subject: str, message: str, email_receiver: str):
 
         context = ssl.create_default_context()
 
-        with smtplib.SMTP('smtp.gmail.com', 587) as smtp:
+        with smtplib.SMTP('smtp.gmail.com', 587, context=context) as smtp:
             smtp.ehlo()  # Проверка соединения
-            smtp.starttls(context=context)
-            smtp.ehlo()
             smtp.login(email_sender, email_password)
             smtp.sendmail(email_sender, email_receiver, em.as_string())
 

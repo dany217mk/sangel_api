@@ -47,6 +47,6 @@ docker-compose up -p sangel -d
 ```
 
 ---
-Разработчик: [Москалец Данила](https://vk.com/dany_217mk)
+Разработчик: [Москалец Данила](https://t.com/moskaletsd)
 ***
    by Sangel
